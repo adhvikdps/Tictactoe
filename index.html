@@ -69,7 +69,6 @@
       margin-bottom: 8px;
       color: white;
       font-size: 0.9rem;
-      animation: fadeIn 0.3s ease-in-out;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -81,11 +80,6 @@
     .event-item.bomb {
       border-color: var(--o-color);
       background: rgba(74, 74, 74, 0.1);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Update body background */
@@ -165,7 +159,7 @@
       100% { transform: translateY(0) scale(1); }
     }
 
-    /* Game container styles */
+    /* Update game container styles */
     .game-container {
       background: rgba(255, 255, 255, 0.15);
       padding: 2rem;
@@ -174,6 +168,47 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.2);
       margin: 2rem;
+      max-width: 1200px;
+      width: 90%;
+    }
+
+    /* Add game layout styles */
+    .game-layout {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .game-board-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Update moves table styles */
+    .moves-table-container {
+      flex: 0 0 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      height: fit-content;
+    }
+
+    /* Add responsive styles */
+    @media (max-width: 1024px) {
+      .game-layout {
+        flex-direction: column;
+      }
+
+      .moves-table-container {
+        flex: 1;
+        width: 100%;
+      }
     }
 
     h1 {
@@ -377,9 +412,304 @@
         width: 100%;
       }
     }
+
+    /* Victory animations */
+    .flower-victory {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      display: none;
+    }
+
+    .flower-victory.active {
+      display: block;
+    }
+
+    .flower {
+      position: absolute;
+      font-size: 3rem;
+      animation: flowerBurst 1s ease-out forwards;
+      transform-origin: center;
+    }
+
+    @keyframes flowerBurst {
+      0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        transform: scale(1) rotate(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .bomb-victory {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      display: none;
+    }
+
+    .bomb-victory.active {
+      display: block;
+    }
+
+    .explosion {
+      position: absolute;
+      font-size: 4rem;
+      animation: explode 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+      transform-origin: center;
+    }
+
+    .explosion::after {
+      content: '💥';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: shockwave 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes explode {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      20% {
+        transform: scale(1.5);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
+    }
+
+    @keyframes shockwave {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Add moves table styles */
+    .moves-table-container {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .moves-table-title {
+      color: white;
+      font-size: 1.2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .moves-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: white;
+    }
+
+    .moves-table th {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    .moves-table td {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .moves-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .moves-table .flower-move {
+      color: var(--x-color);
+    }
+
+    .moves-table .bomb-move {
+      color: var(--o-color);
+    }
+
+    /* Add game mode selection styles */
+    .game-mode-selection {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .mode-button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .mode-button.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+    }
+
+    .mode-button:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .moves-table-container {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .moves-table th,
+      .moves-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Leaderboard styles */
+    .leaderboard-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      margin-top: 2rem;
+      display: none; /* Hidden by default, shown in single player mode */
+    }
+
+    .leaderboard-container.active {
+      display: block;
+    }
+
+    .leaderboard-title {
+      color: white;
+      font-size: 1.3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: white;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 0.8rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .leaderboard-table th {
+      font-weight: bold;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .leaderboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .leaderboard-table .highlight {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .player-name-input {
+      display: none;
+      margin: 1rem auto;
+      text-align: center;
+    }
+
+    .player-name-input input {
+      padding: 0.5rem 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+
+    .player-name-input button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .player-name-input button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .leaderboard-container {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Victory effects containers -->
+  <div class="flower-victory" id="flowerVictory"></div>
+  <div class="bomb-victory" id="bombVictory"></div>
+
   <!-- Background elements -->
   <div class="background-elements">
     <div class="plant-side">
@@ -400,6 +730,12 @@
   <div class="game-container">
     <h1>Plants vs Bombs</h1>
     <p class="game-subtitle">Some people want to destroy plants, some people want to keep them. Both sides fight, see who wins with a game of tic-tac-toe</p>
+
+    <!-- Game mode selection -->
+    <div class="game-mode-selection">
+      <button class="mode-button active" data-mode="two-player">Two Players</button>
+      <button class="mode-button" data-mode="single-player">vs Computer</button>
+    </div>
 
     <!-- Avatar selection -->
     <div class="avatar-selection">
@@ -450,27 +786,60 @@
     <!-- Game status -->
     <div id="status"></div>
 
-    <!-- Game board -->
-    <div id="board">
-      <div class="cell" data-index="0"></div>
-      <div class="cell" data-index="1"></div>
-      <div class="cell" data-index="2"></div>
-      <div class="cell" data-index="3"></div>
-      <div class="cell" data-index="4"></div>
-      <div class="cell" data-index="5"></div>
-      <div class="cell" data-index="6"></div>
-      <div class="cell" data-index="7"></div>
-      <div class="cell" data-index="8"></div>
+    <!-- Game layout container -->
+    <div class="game-layout">
+      <!-- Game board section -->
+      <div class="game-board-section">
+        <div id="board">
+          <div class="cell" data-index="0"></div>
+          <div class="cell" data-index="1"></div>
+          <div class="cell" data-index="2"></div>
+          <div class="cell" data-index="3"></div>
+          <div class="cell" data-index="4"></div>
+          <div class="cell" data-index="5"></div>
+          <div class="cell" data-index="6"></div>
+          <div class="cell" data-index="7"></div>
+          <div class="cell" data-index="8"></div>
+        </div>
+        <button id="restart">Restart Game</button>
+      </div>
+
+      <!-- Moves table -->
+      <div class="moves-table-container">
+        <div class="moves-table-title">Game Moves</div>
+        <table class="moves-table">
+          <thead>
+            <tr>
+              <th>Move #</th>
+              <th>Player</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody id="movesTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard-container" id="leaderboard">
+        <div class="leaderboard-title">Single Player Leaderboard</div>
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Wins</th>
+              <th>Games</th>
+              <th>Win Rate</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+        <div class="player-name-input" id="playerNameInput">
+          <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+          <button id="saveScore">Save Score</button>
+        </div>
+      </div>
     </div>
-
-    <!-- Restart button -->
-    <button id="restart">Restart Game</button>
-  </div>
-
-  <!-- Game events log -->
-  <div class="events-scroller">
-    <div class="events-title">🎮 Game Events</div>
-    <div class="events-container" id="eventsContainer"></div>
   </div>
 
   <script>
@@ -483,6 +852,98 @@
       bombs: 0,
       draws: 0
     };
+    let isSinglePlayerMode = false;
+    let currentPlayerName = '';
+    let gameStats = {
+      wins: 0,
+      totalGames: 0
+    };
+
+    // Load leaderboard from localStorage
+    function loadLeaderboard() {
+      const leaderboard = JSON.parse(localStorage.getItem('tictactoeLeaderboard')) || [];
+      return leaderboard;
+    }
+
+    // Save leaderboard to localStorage
+    function saveLeaderboard(leaderboard) {
+      localStorage.setItem('tictactoeLeaderboard', JSON.stringify(leaderboard));
+    }
+
+    // Update leaderboard display
+    function updateLeaderboardDisplay() {
+      const leaderboard = loadLeaderboard();
+      const leaderboardBody = document.getElementById('leaderboardBody');
+      leaderboardBody.innerHTML = '';
+
+      // Sort by win rate
+      leaderboard.sort((a, b) => {
+        const winRateA = (a.wins / a.totalGames) || 0;
+        const winRateB = (b.wins / b.totalGames) || 0;
+        return winRateB - winRateA;
+      });
+
+      leaderboard.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        const winRate = ((entry.wins / entry.totalGames) * 100).toFixed(1);
+        
+        if (entry.name === currentPlayerName) {
+          row.classList.add('highlight');
+        }
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${entry.name}</td>
+          <td>${entry.wins}</td>
+          <td>${entry.totalGames}</td>
+          <td>${winRate}%</td>
+        `;
+        leaderboardBody.appendChild(row);
+      });
+    }
+
+    // Update player stats
+    function updatePlayerStats(isWin) {
+      if (isWin) {
+        gameStats.wins++;
+      }
+      gameStats.totalGames++;
+
+      // Show name input if not already saved
+      if (!currentPlayerName) {
+        document.getElementById('playerNameInput').style.display = 'block';
+      } else {
+        savePlayerScore();
+      }
+    }
+
+    // Save player score
+    function savePlayerScore() {
+      if (!currentPlayerName) return;
+
+      const leaderboard = loadLeaderboard();
+      const existingEntry = leaderboard.find(entry => entry.name === currentPlayerName);
+
+      if (existingEntry) {
+        existingEntry.wins += gameStats.wins;
+        existingEntry.totalGames += gameStats.totalGames;
+      } else {
+        leaderboard.push({
+          name: currentPlayerName,
+          wins: gameStats.wins,
+          totalGames: gameStats.totalGames
+        });
+      }
+
+      saveLeaderboard(leaderboard);
+      updateLeaderboardDisplay();
+      
+      // Reset game stats
+      gameStats = {
+        wins: 0,
+        totalGames: 0
+      };
+    }
 
     // Symbols for players
     let SYMBOLS = {
@@ -497,7 +958,39 @@
     const plantScore = document.getElementById('plantScore');
     const bombScore = document.getElementById('bombScore');
     const drawScore = document.getElementById('drawScore');
-    const eventsContainer = document.getElementById('eventsContainer');
+    const movesTableBody = document.getElementById('movesTableBody');
+    const modeButtons = document.querySelectorAll('.mode-button');
+    const leaderboardContainer = document.getElementById('leaderboard');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const playerNameField = document.getElementById('playerName');
+    const saveScoreButton = document.getElementById('saveScore');
+
+    // Save score button click handler
+    saveScoreButton.addEventListener('click', () => {
+      const name = playerNameField.value.trim();
+      if (name) {
+        currentPlayerName = name;
+        playerNameInput.style.display = 'none';
+        savePlayerScore();
+      }
+    });
+
+    // Game mode selection
+    modeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        modeButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        isSinglePlayerMode = button.dataset.mode === 'single-player';
+        
+        // Show/hide leaderboard based on mode
+        leaderboardContainer.classList.toggle('active', isSinglePlayerMode);
+        if (isSinglePlayerMode) {
+          updateLeaderboardDisplay();
+        }
+        
+        restartGame();
+      });
+    });
 
     // Winning combinations
     const winningCombinations = [
@@ -506,115 +999,29 @@
       [0, 4, 8], [2, 4, 6] // Diagonals
     ];
 
-    // Add event to game log
-    function addEvent(message, type = '') {
-      const event = document.createElement('div');
-      event.className = `event-item ${type}`;
-      event.textContent = message;
-      eventsContainer.insertBefore(event, eventsContainer.firstChild);
+    // Add moves array to track game moves
+    let moves = [];
 
-      // Keep only last 10 events
-      while (eventsContainer.children.length > 10) {
-        eventsContainer.removeChild(eventsContainer.lastChild);
-      }
-    }
-
-    // Handle cell click
-    function handleCellClick(e) {
-      const cell = e.target;
-      const index = parseInt(cell.dataset.index);
-
-      if (board[index] !== '' || !isGameActive) return;
-
-      // Update board
-      board[index] = currentPlayer;
-      cell.textContent = SYMBOLS[currentPlayer];
+    // Update DOM elements
+    // Function to add move to the table
+    function addMoveToTable(player, position, moveNumber) {
+      const row = document.createElement('tr');
       
-      // Add move event
-      addEvent(
-        `${SYMBOLS[currentPlayer]} placed at position ${index + 1}`,
-        currentPlayer === 'X' ? 'flower' : 'bomb'
-      );
-
-      // Check for win
-      if (checkWin()) {
-        const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
-        statusText.textContent = `${winner} Win!`;
-        isGameActive = false;
-        
-        // Update scores
-        if (currentPlayer === 'X') {
-          scores.plants++;
-          plantScore.textContent = scores.plants;
-        } else {
-          scores.bombs++;
-          bombScore.textContent = scores.bombs;
-        }
-
-        // Add win event
-        addEvent(
-          `${winner} won the game!`,
-          currentPlayer === 'X' ? 'flower' : 'bomb'
-        );
-
-        // Highlight winning cells
-        highlightWinningCells();
-        return;
-      }
-
-      // Check for draw
-      if (checkDraw()) {
-        statusText.textContent = "It's a Draw!";
-        isGameActive = false;
-        scores.draws++;
-        drawScore.textContent = scores.draws;
-        addEvent('Game ended in a draw!');
-        return;
-      }
-
-      // Switch player
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      statusText.textContent = `${currentPlayer === 'X' ? 'Plants' : 'Bombs'}'s Turn`;
-    }
-
-    // Check for win
-    function checkWin() {
-      return winningCombinations.some(combination => {
-        return combination.every(index => {
-          return board[index] === currentPlayer;
-        });
-      });
-    }
-
-    // Check for draw
-    function checkDraw() {
-      return board.every(cell => cell !== '');
-    }
-
-    // Highlight winning cells
-    function highlightWinningCells() {
-      winningCombinations.forEach(combination => {
-        if (combination.every(index => board[index] === currentPlayer)) {
-          combination.forEach(index => {
-            cells[index].classList.add('winner');
-          });
-        }
-      });
-    }
-
-    // Restart game
-    function restartGame() {
-      currentPlayer = 'X';
-      board = ['', '', '', '', '', '', '', '', ''];
-      isGameActive = true;
-      statusText.textContent = "Plants's Turn";
+      const moveNumberCell = document.createElement('td');
+      moveNumberCell.textContent = moveNumber;
       
-      cells.forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove('winner');
-      });
-
-      addEvent('🔄 Game restarted!');
+      const playerCell = document.createElement('td');
+      playerCell.textContent = SYMBOLS[player];
+      playerCell.className = player === 'X' ? 'flower-move' : 'bomb-move';
+      
+      const positionCell = document.createElement('td');
+      positionCell.textContent = position + 1; // Add 1 to make it 1-based
+      
+      row.appendChild(moveNumberCell);
+      row.appendChild(playerCell);
+      row.appendChild(positionCell);
+      
+      movesTableBody.appendChild(row);
     }
 
     // Avatar selection
@@ -642,13 +1049,279 @@
     handleAvatarSelection(document.getElementById('plantAvatars'), 'X');
     handleAvatarSelection(document.getElementById('bombAvatars'), 'O');
 
+    // Update computer player functions
+    function getEmptyCells() {
+      return board.reduce((cells, cell, index) => {
+        if (cell === '') cells.push(index);
+        return cells;
+      }, []);
+    }
+
+    function checkWinningMove(player) {
+      let winningMove = -1;
+      
+      winningCombinations.forEach(combination => {
+        const [a, b, c] = combination;
+        const line = [board[a], board[b], board[c]];
+        const playerCount = line.filter(cell => cell === player).length;
+        const emptyCount = line.filter(cell => cell === '').length;
+
+        if (playerCount === 2 && emptyCount === 1) {
+          // Find the empty position
+          if (board[a] === '') winningMove = a;
+          if (board[b] === '') winningMove = b;
+          if (board[c] === '') winningMove = c;
+        }
+      });
+
+      return winningMove;
+    }
+
+    function findBestMove() {
+      const emptyCells = getEmptyCells();
+      
+      // If no empty cells, return
+      if (emptyCells.length === 0) return -1;
+
+      // Try to win
+      const winningMove = checkWinningMove('O');
+      if (winningMove !== -1) return winningMove;
+
+      // Block player's winning move
+      const blockingMove = checkWinningMove('X');
+      if (blockingMove !== -1) return blockingMove;
+
+      // Take center if available
+      if (board[4] === '') return 4;
+
+      // Take corners
+      const corners = [0, 2, 6, 8].filter(i => board[i] === '');
+      if (corners.length > 0) {
+        return corners[Math.floor(Math.random() * corners.length)];
+      }
+
+      // Take any available cell
+      return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    }
+
+    function makeComputerMove() {
+      if (!isGameActive) return;
+      
+      setTimeout(() => {
+        const move = findBestMove();
+        // Only proceed if a valid move is found
+        if (move !== -1) {
+          const cell = cells[move];
+          handleCellClick({ target: cell });
+        }
+      }, 500);
+    }
+
+    // Update handleCellClick function
+    function handleCellClick(e) {
+      const cell = e.target;
+      const index = parseInt(cell.dataset.index);
+
+      if (board[index] !== '' || !isGameActive) return;
+
+      // Update board
+      board[index] = currentPlayer;
+      cell.textContent = SYMBOLS[currentPlayer];
+      
+      // Record move
+      moves.push({ player: currentPlayer, position: index });
+      addMoveToTable(currentPlayer, index, moves.length);
+
+      // Check for win
+      if (checkWin()) {
+        const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
+        statusText.textContent = `${winner} Win!`;
+        isGameActive = false;
+        
+        // Update scores
+        if (currentPlayer === 'X') {
+          scores.plants++;
+          plantScore.textContent = scores.plants;
+        } else {
+          scores.bombs++;
+          bombScore.textContent = scores.bombs;
+        }
+
+        // Highlight winning cells
+        highlightWinningCells();
+        return;
+      }
+
+      // Check for draw
+      if (checkDraw()) {
+        statusText.textContent = "It's a Draw!";
+        isGameActive = false;
+        scores.draws++;
+        drawScore.textContent = scores.draws;
+        return;
+      }
+
+      // Switch player
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusText.textContent = `${currentPlayer === 'X' ? 'Plants' : 'Bombs'}'s Turn`;
+
+      // Make computer move if in single player mode and it's computer's turn
+      if (isSinglePlayerMode && currentPlayer === 'O' && isGameActive) {
+        makeComputerMove();
+      }
+    }
+
+    // Check for win
+    function checkWin() {
+      const hasWon = winningCombinations.some(combination => {
+        return combination.every(index => {
+          return board[index] === currentPlayer;
+        });
+      });
+
+      if (hasWon) {
+        // Trigger victory effect based on winner
+        createVictoryEffect(currentPlayer === 'X' ? 'flower' : 'bomb');
+        
+        // Update single player stats if applicable
+        if (isSinglePlayerMode && currentPlayer === 'X') {
+          updatePlayerStats(true);
+        }
+      }
+
+      return hasWon;
+    }
+
+    // Check for draw
+    function checkDraw() {
+      const isDraw = board.every(cell => cell !== '');
+      if (isDraw && isSinglePlayerMode) {
+        updatePlayerStats(false);
+      }
+      return isDraw;
+    }
+
+    // Highlight winning cells
+    function highlightWinningCells() {
+      winningCombinations.forEach(combination => {
+        if (combination.every(index => board[index] === currentPlayer)) {
+          combination.forEach(index => {
+            cells[index].classList.add('winner');
+          });
+        }
+      });
+    }
+
+    // Restart game
+    function restartGame() {
+      currentPlayer = 'X';
+      board = ['', '', '', '', '', '', '', '', ''];
+      isGameActive = true;
+      statusText.textContent = "Plants's Turn";
+      
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('winner');
+      });
+
+      // Clear moves array and table
+      moves = [];
+      movesTableBody.innerHTML = '';
+
+      // Clear victory effects
+      document.getElementById('flowerVictory').classList.remove('active');
+      document.getElementById('bombVictory').classList.remove('active');
+    }
+
     // Add event listeners
     cells.forEach(cell => cell.addEventListener('click', handleCellClick));
     restartBtn.addEventListener('click', restartGame);
 
     // Initialize game
-    addEvent('🎮 Game started! Good luck!');
     statusText.textContent = "Plants's Turn";
+
+    // Create victory effects
+    function createVictoryEffect(type) {
+      const symbols = type === 'flower' ? 
+        ['🌸', '🌺', '🌹', '🌻', '🌼', '🌷', '🌱', '🍀'] :
+        ['💣', '🧨', '💥', '🎇', '🎆', '⚡', '🔥', '⭐'];
+      
+      const container = document.getElementById(type === 'flower' ? 'flowerVictory' : 'bombVictory');
+      container.innerHTML = '';
+      container.classList.add('active');
+
+      if (type === 'flower') {
+        // Create flower burst
+        const flowerCount = 30;
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const radius = Math.min(window.innerWidth, window.innerHeight) / 3;
+
+        // Create flowers in a circular pattern
+        for (let i = 0; i < flowerCount; i++) {
+          const angle = (i / flowerCount) * Math.PI * 2;
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          
+          const flower = document.createElement('div');
+          flower.className = 'flower';
+          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          flower.style.left = x + 'px';
+          flower.style.top = y + 'px';
+          flower.style.animationDelay = (i * 0.05) + 's';
+          
+          container.appendChild(flower);
+        }
+
+        // Add central burst of flowers
+        for (let i = 0; i < 8; i++) {
+          const flower = document.createElement('div');
+          flower.className = 'flower';
+          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          flower.style.left = '50%';
+          flower.style.top = '50%';
+          flower.style.transform = 'translate(-50%, -50%)';
+          flower.style.animationDelay = (i * 0.1) + 's';
+          container.appendChild(flower);
+        }
+      } else {
+        // Keep existing bomb animation code unchanged
+        const count = 15;
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const radius = Math.min(window.innerWidth, window.innerHeight) / 4;
+
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          const x = centerX + Math.cos(angle) * (radius / 2);
+          const y = centerY + Math.sin(angle) * (radius / 2);
+          
+          const element = document.createElement('div');
+          element.className = 'explosion';
+          element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          element.style.left = `${(x / window.innerWidth) * 100}%`;
+          element.style.top = `${(y / window.innerHeight) * 100}%`;
+          element.style.animationDelay = `${(i / count) * 0.2}s`;
+          
+          container.appendChild(element);
+        }
+
+        // Add central explosion
+        const centralExplosion = document.createElement('div');
+        centralExplosion.className = 'explosion';
+        centralExplosion.textContent = '💥';
+        centralExplosion.style.left = '50%';
+        centralExplosion.style.top = '50%';
+        centralExplosion.style.transform = 'translate(-50%, -50%)';
+        centralExplosion.style.fontSize = '6rem';
+        container.appendChild(centralExplosion);
+      }
+
+      // Remove effect after animation
+      setTimeout(() => {
+        container.classList.remove('active');
+      }, 3000);
+    }
   </script>
 </body>
 </html> 
