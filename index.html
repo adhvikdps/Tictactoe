@@ -603,8 +603,8 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: 1000;
       display: none;
@@ -617,20 +617,42 @@
       align-items: center;
     }
 
+    .victory-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+    }
+
     .flower {
       position: absolute;
       font-size: 3rem;
-      animation: flowerBurst 1.5s ease-out forwards;
       transform-origin: center;
+      left: 0;
+      top: 0;
     }
 
-    @keyframes flowerBurst {
+    .flower-primary {
+      animation: flowerPrimaryBurst 2s ease-out forwards;
+    }
+
+    .flower-secondary {
+      animation: flowerSecondaryBurst 1.5s ease-out forwards;
+    }
+
+    .flower-tertiary {
+      animation: flowerTertiaryBurst 1s ease-out forwards;
+    }
+
+    @keyframes flowerPrimaryBurst {
       0% {
         transform: translate(-50%, -50%) scale(0) rotate(0deg);
         opacity: 0;
       }
       20% {
-        transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+        transform: translate(-50%, -50%) scale(1.5) rotate(120deg);
         opacity: 1;
       }
       100% {
@@ -639,24 +661,82 @@
       }
     }
 
+    @keyframes flowerSecondaryBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(-120deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(2) rotate(-360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes flowerTertiaryBurst {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      20% {
+        transform: translate(-50%, -50%) scale(0.8) rotate(180deg);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5) rotate(540deg);
+        opacity: 0;
+      }
+    }
+
     @media (max-width: 480px) {
       .flower {
         font-size: 2.5rem;
-        left: 50%;
-        top: 50%;
       }
 
-      @keyframes flowerBurst {
+      @keyframes flowerPrimaryBurst {
         0% {
           transform: translate(-50%, -50%) scale(0) rotate(0deg);
           opacity: 0;
         }
         20% {
-          transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+          transform: translate(-50%, -50%) scale(1.2) rotate(120deg);
           opacity: 1;
         }
         100% {
           transform: translate(-50%, -50%) scale(2) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes flowerSecondaryBurst {
+        0% {
+          transform: translate(-50%, -50%) scale(0) rotate(0deg);
+          opacity: 0;
+        }
+        20% {
+          transform: translate(-50%, -50%) scale(1) rotate(-120deg);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.5) rotate(-360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes flowerTertiaryBurst {
+        0% {
+          transform: translate(-50%, -50%) scale(0) rotate(0deg);
+          opacity: 0;
+        }
+        20% {
+          transform: translate(-50%, -50%) scale(0.7) rotate(180deg);
+          opacity: 0.6;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.2) rotate(540deg);
           opacity: 0;
         }
       }
@@ -1340,64 +1420,84 @@
       container.innerHTML = '';
       container.classList.add('active');
 
+      // Create a centered container for all elements
+      const victoryContainer = document.createElement('div');
+      victoryContainer.className = 'victory-container';
+      container.appendChild(victoryContainer);
+
       const isMobile = window.innerWidth <= 480;
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
       const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 3 : 2);
 
       if (type === 'flower') {
-        // Create flower burst
-        const flowerCount = isMobile ? 16 : 36;
-
-        // Create flowers in a circular pattern with multiple rings
-        for (let ring = 0; ring < 2; ring++) {
-          const ringRadius = radius * (ring + 1) / 2;
-          for (let i = 0; i < flowerCount; i++) {
-            const angle = (i / flowerCount) * Math.PI * 2;
+        // Create fractal flower pattern
+        function createFlowerLayer(count, radius, delay, className) {
+          const angleStep = (Math.PI * 2) / count;
+          for (let i = 0; i < count; i++) {
+            const angle = i * angleStep;
             const flower = document.createElement('div');
-            flower.className = 'flower';
+            flower.className = `flower ${className}`;
             flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-            flower.style.left = '50%';
-            flower.style.top = '50%';
-            flower.style.animationDelay = (i * 0.05 + ring * 0.1) + 's';
-            container.appendChild(flower);
+            flower.style.animationDelay = delay + (i * 0.1) + 's';
+            victoryContainer.appendChild(flower);
+
+            // Create secondary flowers around primary ones
+            if (className === 'flower-primary') {
+              const secondaryCount = 5;
+              const secondaryAngleStep = (Math.PI * 2) / secondaryCount;
+              for (let j = 0; j < secondaryCount; j++) {
+                const secondaryAngle = angle + (j * secondaryAngleStep);
+                const secondaryFlower = document.createElement('div');
+                secondaryFlower.className = 'flower flower-secondary';
+                secondaryFlower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                secondaryFlower.style.transform = `translate(${Math.cos(secondaryAngle) * radius * 0.5}px, ${Math.sin(secondaryAngle) * radius * 0.5}px)`;
+                secondaryFlower.style.animationDelay = delay + 0.2 + (i * 0.1) + (j * 0.05) + 's';
+                victoryContainer.appendChild(secondaryFlower);
+
+                // Create tertiary flowers
+                if (j % 2 === 0) {
+                  const tertiaryFlower = document.createElement('div');
+                  tertiaryFlower.className = 'flower flower-tertiary';
+                  tertiaryFlower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                  tertiaryFlower.style.transform = `translate(${Math.cos(secondaryAngle) * radius * 0.3}px, ${Math.sin(secondaryAngle) * radius * 0.3}px)`;
+                  tertiaryFlower.style.animationDelay = delay + 0.4 + (i * 0.1) + (j * 0.05) + 's';
+                  victoryContainer.appendChild(tertiaryFlower);
+                }
+              }
+            }
           }
         }
 
-        // Add central burst of flowers
-        const centerFlowers = isMobile ? 8 : 12;
-        for (let i = 0; i < centerFlowers; i++) {
+        // Create multiple layers of flowers with different timings
+        const primaryCount = isMobile ? 8 : 12;
+        createFlowerLayer(primaryCount, radius, 0, 'flower-primary');
+        
+        // Create center burst
+        const centerCount = isMobile ? 6 : 8;
+        for (let i = 0; i < centerCount; i++) {
           const flower = document.createElement('div');
-          flower.className = 'flower';
+          flower.className = 'flower flower-primary';
           flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          flower.style.left = '50%';
-          flower.style.top = '50%';
-          flower.style.animationDelay = (i * 0.08) + 's';
-          container.appendChild(flower);
+          flower.style.animationDelay = (i * 0.15) + 's';
+          victoryContainer.appendChild(flower);
         }
       } else {
-        // Bomb animation
+        // Update bomb animation to use the victory container
         const count = isMobile ? 8 : 15;
-
         for (let i = 0; i < count; i++) {
           const angle = (i / count) * Math.PI * 2;
           const element = document.createElement('div');
           element.className = 'explosion';
           element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          element.style.left = '50%';
-          element.style.top = '50%';
           element.style.animationDelay = `${(i / count) * 0.2}s`;
-          container.appendChild(element);
+          victoryContainer.appendChild(element);
         }
 
         // Add central explosion
         const centralExplosion = document.createElement('div');
         centralExplosion.className = 'explosion';
         centralExplosion.textContent = '💥';
-        centralExplosion.style.left = '50%';
-        centralExplosion.style.top = '50%';
         centralExplosion.style.fontSize = isMobile ? '4rem' : '6rem';
-        container.appendChild(centralExplosion);
+        victoryContainer.appendChild(centralExplosion);
       }
 
       // Remove effect after animation
