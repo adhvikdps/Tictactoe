@@ -598,7 +598,7 @@
     }
 
     /* Victory animations */
-    .flower-victory {
+    .flower-victory, .bomb-victory {
       position: fixed;
       top: 0;
       left: 0;
@@ -607,10 +607,13 @@
       pointer-events: none;
       z-index: 1000;
       display: none;
+      overflow: hidden;
     }
 
-    .flower-victory.active {
-      display: block;
+    .flower-victory.active, .bomb-victory.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .flower {
@@ -633,21 +636,6 @@
         transform: scale(2) rotate(360deg);
         opacity: 0;
       }
-    }
-
-    .bomb-victory {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1000;
-      display: none;
-    }
-
-    .bomb-victory.active {
-      display: block;
     }
 
     .explosion {
@@ -694,6 +682,61 @@
       100% {
         transform: translate(-50%, -50%) scale(4);
         opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .flower {
+        font-size: 2.5rem;
+      }
+
+      .explosion {
+        font-size: 3rem;
+      }
+
+      @keyframes flowerBurst {
+        0% {
+          transform: scale(0) rotate(0deg);
+          opacity: 0;
+        }
+        20% {
+          transform: scale(1) rotate(180deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes explode {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        20% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.5);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+
+      @keyframes shockwave {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(2.5);
+          opacity: 0;
+        }
       }
     }
 
@@ -1448,12 +1491,14 @@
       container.innerHTML = '';
       container.classList.add('active');
 
+      const isMobile = window.innerWidth <= 480;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 4 : 3);
+
       if (type === 'flower') {
         // Create flower burst
-        const flowerCount = 30;
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const radius = Math.min(window.innerWidth, window.innerHeight) / 3;
+        const flowerCount = isMobile ? 20 : 30;
 
         // Create flowers in a circular pattern
         for (let i = 0; i < flowerCount; i++) {
@@ -1472,7 +1517,8 @@
         }
 
         // Add central burst of flowers
-        for (let i = 0; i < 8; i++) {
+        const centerFlowers = isMobile ? 6 : 8;
+        for (let i = 0; i < centerFlowers; i++) {
           const flower = document.createElement('div');
           flower.className = 'flower';
           flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
@@ -1483,11 +1529,8 @@
           container.appendChild(flower);
         }
       } else {
-        // Keep existing bomb animation code unchanged
-        const count = 15;
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const radius = Math.min(window.innerWidth, window.innerHeight) / 4;
+        // Bomb animation
+        const count = isMobile ? 10 : 15;
 
         for (let i = 0; i < count; i++) {
           const angle = (i / count) * Math.PI * 2;
@@ -1511,7 +1554,7 @@
         centralExplosion.style.left = '50%';
         centralExplosion.style.top = '50%';
         centralExplosion.style.transform = 'translate(-50%, -50%)';
-        centralExplosion.style.fontSize = '6rem';
+        centralExplosion.style.fontSize = isMobile ? '4rem' : '6rem';
         container.appendChild(centralExplosion);
       }
 
