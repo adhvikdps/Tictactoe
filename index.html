@@ -1066,6 +1066,14 @@
   </style>
 </head>
 <body>
+  <!-- Audio elements for victory sounds -->
+  <audio id="plantWinSound" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_8ed03a9442.mp3" type="audio/mp3">
+  </audio>
+  <audio id="bombWinSound" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/25/audio_c8c8a73467.mp3" type="audio/mp3">
+  </audio>
+
   <!-- Victory effects containers -->
   <div class="flower-victory" id="flowerVictory"></div>
   <div class="bomb-victory" id="bombVictory"></div>
@@ -1615,11 +1623,42 @@
       }, 3000);
     }
 
+    // Add sound control functions
+    let soundEnabled = true;
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      return soundEnabled;
+    }
+
+    function playWinSound(winner) {
+      if (!soundEnabled) return;
+      
+      const sound = winner === 'X' ? 
+          document.getElementById('plantWinSound') : 
+          document.getElementById('bombWinSound');
+      
+      // Reset and play sound
+      sound.currentTime = 0;
+      sound.volume = 0.5; // Set volume to 50%
+      
+      // Play sound with error handling
+      const playPromise = sound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Audio playback failed:", error);
+        });
+      }
+    }
+
     // Function to handle game end
     function handleGameEnd(isWin) {
       if (isWin) {
         const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
         statusText.textContent = `${winner} Win!`;
+        
+        // Play victory sound
+        playWinSound(currentPlayer);
         
         // Update scores
         if (currentPlayer === 'X') {
@@ -1802,6 +1841,22 @@
       avatarToggle.classList.toggle('collapsed');
       avatarSelection.classList.toggle('collapsed');
     });
+
+    // Add sound toggle button to game controls
+    const gameContainer = document.querySelector('.game-container');
+    const soundToggle = document.createElement('button');
+    soundToggle.className = 'mode-button';
+    soundToggle.style.position = 'absolute';
+    soundToggle.style.top = '1rem';
+    soundToggle.style.right = '1rem';
+    soundToggle.innerHTML = '🔊';
+    soundToggle.title = 'Toggle Sound';
+    soundToggle.addEventListener('click', () => {
+      const isSoundOn = toggleSound();
+      soundToggle.innerHTML = isSoundOn ? '🔊' : '🔇';
+    });
+    gameContainer.style.position = 'relative';
+    gameContainer.appendChild(soundToggle);
   </script>
 </body>
 </html> 
