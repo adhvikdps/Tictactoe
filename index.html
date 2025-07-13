@@ -199,7 +199,6 @@
       height: fit-content;
     }
 
-    /* Add responsive styles */
     @media (max-width: 1024px) {
       .game-layout {
         flex-direction: column;
@@ -433,6 +432,9 @@
       background: rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       backdrop-filter: blur(5px);
+      width: 100%;
+      max-width: 800px;
+      margin: 1rem auto;
     }
 
     .score-item {
@@ -846,6 +848,9 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       margin-top: 2rem;
       display: none; /* Hidden by default, shown in single player mode */
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .leaderboard-container.active {
@@ -864,6 +869,9 @@
       width: 100%;
       border-collapse: collapse;
       color: white;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .leaderboard-table th,
@@ -876,14 +884,61 @@
     .leaderboard-table th {
       font-weight: bold;
       border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
     }
 
     .leaderboard-table tr:last-child td {
       border-bottom: none;
     }
 
+    .leaderboard-table tr:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     .leaderboard-table .highlight {
       background: rgba(59, 130, 246, 0.2);
+    }
+
+    .leaderboard-table .highlight:hover {
+      background: rgba(59, 130, 246, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .leaderboard-container {
+        padding: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .leaderboard-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 0.6rem;
+        min-width: 70px;
+      }
+
+      .leaderboard-title {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .leaderboard-container {
+        padding: 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 0.5rem;
+        min-width: 60px;
+      }
     }
 
     .player-name-input {
@@ -916,19 +971,6 @@
     .player-name-input button:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
-    }
-
-    @media (max-width: 768px) {
-      .leaderboard-container {
-        padding: 1rem;
-        margin-top: 1rem;
-      }
-
-      .leaderboard-table th,
-      .leaderboard-table td {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-      }
     }
   </style>
 </head>
@@ -965,12 +1007,12 @@
         <button class="mode-button" data-mode="single-player">vs Computer</button>
       </div>
       <div class="mode-divider"></div>
-      <button class="mode-button" id="avatarToggle">
+      <button class="mode-button collapsed" id="avatarToggle">
         <span class="toggle-icon">▼</span>
         <span>Avatars</span>
       </button>
     </div>
-    <div class="avatar-selection">
+    <div class="avatar-selection collapsed">
       <div class="avatar-side plants">
         <div class="avatar-title">Choose Your Plant</div>
         <div class="avatar-options" id="plantAvatars">
@@ -998,25 +1040,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Scoreboard -->
-    <div id="scoreboard">
-      <div class="score-item">
-        <div class="score-label">Plants</div>
-        <div class="score-value" id="plantScore">0</div>
-      </div>
-      <div class="score-item">
-        <div class="score-label">Draws</div>
-        <div class="score-value" id="drawScore">0</div>
-      </div>
-      <div class="score-item">
-        <div class="score-label">Bombs</div>
-        <div class="score-value" id="bombScore">0</div>
-      </div>
-    </div>
-
-    <!-- Game status -->
-    <div id="status"></div>
 
     <!-- Game layout container -->
     <div class="game-layout">
@@ -1062,6 +1085,8 @@
               <th>Wins</th>
               <th>Games</th>
               <th>Win Rate</th>
+              <th>Best Streak</th>
+              <th>Last Played</th>
             </tr>
           </thead>
           <tbody id="leaderboardBody"></tbody>
@@ -1070,6 +1095,25 @@
           <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
           <button id="saveScore">Save Score</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Game status -->
+    <div id="status"></div>
+
+    <!-- Scoreboard -->
+    <div id="scoreboard">
+      <div class="score-item">
+        <div class="score-label">Plants</div>
+        <div class="score-value" id="plantScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Draws</div>
+        <div class="score-value" id="drawScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Bombs</div>
+        <div class="score-value" id="bombScore">0</div>
       </div>
     </div>
   </div>
@@ -1088,7 +1132,10 @@
     let currentPlayerName = '';
     let gameStats = {
       wins: 0,
-      totalGames: 0
+      totalGames: 0,
+      winStreak: 0,
+      bestWinStreak: 0,
+      lastGameTimestamp: null
     };
 
     // Load leaderboard from localStorage
@@ -1108,16 +1155,20 @@
       const leaderboardBody = document.getElementById('leaderboardBody');
       leaderboardBody.innerHTML = '';
 
-      // Sort by win rate
+      // Sort by win rate, then by total wins for tiebreaker
       leaderboard.sort((a, b) => {
         const winRateA = (a.wins / a.totalGames) || 0;
         const winRateB = (b.wins / b.totalGames) || 0;
+        if (winRateB === winRateA) {
+          return b.wins - a.wins; // If win rates are equal, sort by total wins
+        }
         return winRateB - winRateA;
       });
 
       leaderboard.forEach((entry, index) => {
         const row = document.createElement('tr');
         const winRate = ((entry.wins / entry.totalGames) * 100).toFixed(1);
+        const lastPlayed = entry.lastGameTimestamp ? new Date(entry.lastGameTimestamp).toLocaleDateString() : 'N/A';
         
         if (entry.name === currentPlayerName) {
           row.classList.add('highlight');
@@ -1129,6 +1180,8 @@
           <td>${entry.wins}</td>
           <td>${entry.totalGames}</td>
           <td>${winRate}%</td>
+          <td>${entry.bestWinStreak || 0}</td>
+          <td>${lastPlayed}</td>
         `;
         leaderboardBody.appendChild(row);
       });
@@ -1138,8 +1191,13 @@
     function updatePlayerStats(isWin) {
       if (isWin) {
         gameStats.wins++;
+        gameStats.winStreak++;
+        gameStats.bestWinStreak = Math.max(gameStats.bestWinStreak, gameStats.winStreak);
+      } else {
+        gameStats.winStreak = 0;
       }
       gameStats.totalGames++;
+      gameStats.lastGameTimestamp = new Date().toISOString();
 
       // Show name input if not already saved
       if (!currentPlayerName) {
@@ -1159,11 +1217,15 @@
       if (existingEntry) {
         existingEntry.wins += gameStats.wins;
         existingEntry.totalGames += gameStats.totalGames;
+        existingEntry.bestWinStreak = Math.max(existingEntry.bestWinStreak || 0, gameStats.bestWinStreak);
+        existingEntry.lastGameTimestamp = gameStats.lastGameTimestamp;
       } else {
         leaderboard.push({
           name: currentPlayerName,
           wins: gameStats.wins,
-          totalGames: gameStats.totalGames
+          totalGames: gameStats.totalGames,
+          bestWinStreak: gameStats.bestWinStreak,
+          lastGameTimestamp: gameStats.lastGameTimestamp
         });
       }
 
@@ -1173,7 +1235,10 @@
       // Reset game stats
       gameStats = {
         wins: 0,
-        totalGames: 0
+        totalGames: 0,
+        winStreak: 0,
+        bestWinStreak: 0,
+        lastGameTimestamp: null
       };
     }
 
