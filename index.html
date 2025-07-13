@@ -427,14 +427,13 @@
     #scoreboard {
       display: flex;
       justify-content: space-around;
-      margin: 0.5rem 0;
+      margin: 1rem auto;
       padding: 0.5rem;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       backdrop-filter: blur(5px);
-      width: 100%;
+      width: 95%;
       max-width: 800px;
-      margin: 1rem auto;
     }
 
     .score-item {
@@ -621,25 +620,8 @@
     .flower {
       position: absolute;
       font-size: 3rem;
-      animation: flowerBurst 1s ease-out forwards;
+      animation: flowerBurst 1.5s ease-out forwards;
       transform-origin: center;
-    }
-
-    .explosion {
-      position: absolute;
-      font-size: 4rem;
-      animation: explode 2s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
-      transform-origin: center;
-    }
-
-    .explosion::after {
-      content: '💥';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: shockwave 1s ease-out forwards;
-      opacity: 0;
     }
 
     @keyframes flowerBurst {
@@ -648,41 +630,11 @@
         opacity: 0;
       }
       20% {
-        transform: translate(-50%, -50%) scale(1) rotate(180deg);
+        transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
         opacity: 1;
       }
       100% {
-        transform: translate(-50%, -50%) scale(2) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    @keyframes explode {
-      0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 0;
-      }
-      20% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 1;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(2);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(3);
-        opacity: 0;
-      }
-    }
-
-    @keyframes shockwave {
-      0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(4);
+        transform: translate(-50%, -50%) scale(3) rotate(360deg);
         opacity: 0;
       }
     }
@@ -694,53 +646,17 @@
         top: 50%;
       }
 
-      .explosion {
-        font-size: 3rem;
-        left: 50%;
-        top: 50%;
-      }
-
       @keyframes flowerBurst {
         0% {
           transform: translate(-50%, -50%) scale(0) rotate(0deg);
           opacity: 0;
         }
         20% {
-          transform: translate(-50%, -50%) scale(1) rotate(180deg);
+          transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
           opacity: 1;
         }
         100% {
-          transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
-          opacity: 0;
-        }
-      }
-
-      @keyframes explode {
-        0% {
-          transform: translate(-50%, -50%) scale(0);
-          opacity: 0;
-        }
-        20% {
-          transform: translate(-50%, -50%) scale(1.2);
-          opacity: 1;
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.5);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(2);
-          opacity: 0;
-        }
-      }
-
-      @keyframes shockwave {
-        0% {
-          transform: translate(-50%, -50%) scale(0);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(2.5);
+          transform: translate(-50%, -50%) scale(2) rotate(360deg);
           opacity: 0;
         }
       }
@@ -850,11 +766,10 @@
       padding: 1.5rem;
       backdrop-filter: blur(5px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      margin-top: 2rem;
+      margin: 2rem auto;
       display: none; /* Hidden by default, shown in single player mode */
       max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
+      width: 95%;
     }
 
     .leaderboard-container.active {
@@ -911,7 +826,7 @@
     @media (max-width: 768px) {
       .leaderboard-container {
         padding: 1rem;
-        margin-top: 1rem;
+        margin: 1rem auto;
         font-size: 0.9rem;
       }
 
@@ -930,18 +845,28 @@
       .leaderboard-title {
         font-size: 1.1rem;
       }
+
+      #scoreboard {
+        margin: 0.75rem auto;
+      }
     }
 
     @media (max-width: 480px) {
       .leaderboard-container {
         padding: 0.75rem;
         font-size: 0.8rem;
+        margin: 0.75rem auto;
       }
 
       .leaderboard-table th,
       .leaderboard-table td {
         padding: 0.5rem;
         min-width: 60px;
+      }
+
+      #scoreboard {
+        margin: 0.5rem auto;
+        padding: 0.4rem;
       }
     }
 
@@ -1077,33 +1002,7 @@
           <tbody id="movesTableBody"></tbody>
         </table>
       </div>
-
-      <!-- Leaderboard -->
-      <div class="leaderboard-container" id="leaderboard">
-        <div class="leaderboard-title">Single Player Leaderboard</div>
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Player</th>
-              <th>Wins</th>
-              <th>Games</th>
-              <th>Win Rate</th>
-              <th>Best Streak</th>
-              <th>Last Played</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardBody"></tbody>
-        </table>
-        <div class="player-name-input" id="playerNameInput">
-          <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
-          <button id="saveScore">Save Score</button>
-        </div>
-      </div>
     </div>
-
-    <!-- Game status -->
-    <div id="status"></div>
 
     <!-- Scoreboard -->
     <div id="scoreboard">
@@ -1118,6 +1017,32 @@
       <div class="score-item">
         <div class="score-label">Bombs</div>
         <div class="score-value" id="bombScore">0</div>
+      </div>
+    </div>
+
+    <!-- Game status -->
+    <div id="status"></div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard-container" id="leaderboard">
+      <div class="leaderboard-title">Single Player Leaderboard</div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Games</th>
+            <th>Win Rate</th>
+            <th>Best Streak</th>
+            <th>Last Played</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+      <div class="player-name-input" id="playerNameInput">
+        <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+        <button id="saveScore">Save Score</button>
       </div>
     </div>
   </div>
@@ -1418,33 +1343,36 @@
       const isMobile = window.innerWidth <= 480;
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 4 : 3);
+      const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 3 : 2);
 
       if (type === 'flower') {
         // Create flower burst
-        const flowerCount = isMobile ? 12 : 30;
+        const flowerCount = isMobile ? 16 : 36;
 
-        // Create flowers in a circular pattern
-        for (let i = 0; i < flowerCount; i++) {
-          const angle = (i / flowerCount) * Math.PI * 2;
-          const flower = document.createElement('div');
-          flower.className = 'flower';
-          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          flower.style.left = '50%';
-          flower.style.top = '50%';
-          flower.style.animationDelay = (i * 0.1) + 's';
-          container.appendChild(flower);
+        // Create flowers in a circular pattern with multiple rings
+        for (let ring = 0; ring < 2; ring++) {
+          const ringRadius = radius * (ring + 1) / 2;
+          for (let i = 0; i < flowerCount; i++) {
+            const angle = (i / flowerCount) * Math.PI * 2;
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            flower.style.left = '50%';
+            flower.style.top = '50%';
+            flower.style.animationDelay = (i * 0.05 + ring * 0.1) + 's';
+            container.appendChild(flower);
+          }
         }
 
         // Add central burst of flowers
-        const centerFlowers = isMobile ? 6 : 8;
+        const centerFlowers = isMobile ? 8 : 12;
         for (let i = 0; i < centerFlowers; i++) {
           const flower = document.createElement('div');
           flower.className = 'flower';
           flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
           flower.style.left = '50%';
           flower.style.top = '50%';
-          flower.style.animationDelay = (i * 0.1) + 's';
+          flower.style.animationDelay = (i * 0.08) + 's';
           container.appendChild(flower);
         }
       } else {
