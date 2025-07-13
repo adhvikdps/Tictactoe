@@ -230,7 +230,63 @@
       margin-right: auto;
     }
 
-    /* Avatar selection styles */
+    /* Game mode and avatar selection styles */
+    .game-mode-selection {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .mode-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .mode-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 0.25rem;
+    }
+
+    .mode-button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mode-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .mode-button.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .toggle-icon {
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    #avatarToggle.collapsed .toggle-icon {
+      transform: rotate(-90deg);
+    }
+
     .avatar-selection {
       display: flex;
       justify-content: center;
@@ -241,6 +297,16 @@
       border-radius: 12px;
       backdrop-filter: blur(5px);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      max-height: 500px;
+      overflow: hidden;
+    }
+
+    .avatar-selection.collapsed {
+      max-height: 0;
+      padding: 0;
+      margin: 0;
+      opacity: 0;
     }
 
     .avatar-side {
@@ -743,11 +809,16 @@
 
     <!-- Game mode selection -->
     <div class="game-mode-selection">
-      <button class="mode-button active" data-mode="two-player">Two Players</button>
-      <button class="mode-button" data-mode="single-player">vs Computer</button>
+      <div class="mode-controls">
+        <button class="mode-button active" data-mode="two-player">Two Players</button>
+        <button class="mode-button" data-mode="single-player">vs Computer</button>
+      </div>
+      <div class="mode-divider"></div>
+      <button class="mode-button" id="avatarToggle">
+        <span class="toggle-icon">▼</span>
+        <span>Avatars</span>
+      </button>
     </div>
-
-    <!-- Avatar selection -->
     <div class="avatar-selection">
       <div class="avatar-side plants">
         <div class="avatar-title">Choose Your Plant</div>
@@ -1249,6 +1320,15 @@
 
     // Initialize game
     statusText.textContent = "Plants's Turn";
+
+    // Avatar section toggle
+    const avatarToggle = document.getElementById('avatarToggle');
+    const avatarSelection = document.querySelector('.avatar-selection');
+    
+    avatarToggle.addEventListener('click', () => {
+      avatarToggle.classList.toggle('collapsed');
+      avatarSelection.classList.toggle('collapsed');
+    });
 
     // Create victory effects
     function createVictoryEffect(type) {
