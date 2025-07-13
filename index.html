@@ -625,21 +625,6 @@
       transform-origin: center;
     }
 
-    @keyframes flowerBurst {
-      0% {
-        transform: scale(0) rotate(0deg);
-        opacity: 0;
-      }
-      20% {
-        transform: scale(1) rotate(180deg);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(2) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
     .explosion {
       position: absolute;
       font-size: 4rem;
@@ -657,21 +642,36 @@
       opacity: 0;
     }
 
-    @keyframes explode {
+    @keyframes flowerBurst {
       0% {
-        transform: scale(0);
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
         opacity: 0;
       }
       20% {
-        transform: scale(1.5);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(2);
+        transform: translate(-50%, -50%) scale(1) rotate(180deg);
         opacity: 1;
       }
       100% {
-        transform: scale(3);
+        transform: translate(-50%, -50%) scale(2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes explode {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+      20% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 1;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(3);
         opacity: 0;
       }
     }
@@ -690,42 +690,46 @@
     @media (max-width: 480px) {
       .flower {
         font-size: 2.5rem;
+        left: 50%;
+        top: 50%;
       }
 
       .explosion {
         font-size: 3rem;
+        left: 50%;
+        top: 50%;
       }
 
       @keyframes flowerBurst {
         0% {
-          transform: scale(0) rotate(0deg);
+          transform: translate(-50%, -50%) scale(0) rotate(0deg);
           opacity: 0;
         }
         20% {
-          transform: scale(1) rotate(180deg);
+          transform: translate(-50%, -50%) scale(1) rotate(180deg);
           opacity: 1;
         }
         100% {
-          transform: scale(1.5) rotate(360deg);
+          transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
           opacity: 0;
         }
       }
 
       @keyframes explode {
         0% {
-          transform: scale(0);
+          transform: translate(-50%, -50%) scale(0);
           opacity: 0;
         }
         20% {
-          transform: scale(1.2);
+          transform: translate(-50%, -50%) scale(1.2);
           opacity: 1;
         }
         50% {
-          transform: scale(1.5);
+          transform: translate(-50%, -50%) scale(1.5);
           opacity: 1;
         }
         100% {
-          transform: scale(2);
+          transform: translate(-50%, -50%) scale(2);
           opacity: 0;
         }
       }
@@ -1401,6 +1405,117 @@
       return emptyCells[Math.floor(Math.random() * emptyCells.length)];
     }
 
+    // Create victory effects
+    function createVictoryEffect(type) {
+      const symbols = type === 'flower' ? 
+        ['🌸', '🌺', '🌹', '🌻', '🌼', '🌷', '🌱', '🍀'] :
+        ['💣', '🧨', '💥', '🎇', '🎆', '⚡', '🔥', '⭐'];
+      
+      const container = document.getElementById(type === 'flower' ? 'flowerVictory' : 'bombVictory');
+      container.innerHTML = '';
+      container.classList.add('active');
+
+      const isMobile = window.innerWidth <= 480;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 4 : 3);
+
+      if (type === 'flower') {
+        // Create flower burst
+        const flowerCount = isMobile ? 12 : 30;
+
+        // Create flowers in a circular pattern
+        for (let i = 0; i < flowerCount; i++) {
+          const angle = (i / flowerCount) * Math.PI * 2;
+          const flower = document.createElement('div');
+          flower.className = 'flower';
+          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          flower.style.left = '50%';
+          flower.style.top = '50%';
+          flower.style.animationDelay = (i * 0.1) + 's';
+          container.appendChild(flower);
+        }
+
+        // Add central burst of flowers
+        const centerFlowers = isMobile ? 6 : 8;
+        for (let i = 0; i < centerFlowers; i++) {
+          const flower = document.createElement('div');
+          flower.className = 'flower';
+          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          flower.style.left = '50%';
+          flower.style.top = '50%';
+          flower.style.animationDelay = (i * 0.1) + 's';
+          container.appendChild(flower);
+        }
+      } else {
+        // Bomb animation
+        const count = isMobile ? 8 : 15;
+
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          const element = document.createElement('div');
+          element.className = 'explosion';
+          element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          element.style.left = '50%';
+          element.style.top = '50%';
+          element.style.animationDelay = `${(i / count) * 0.2}s`;
+          container.appendChild(element);
+        }
+
+        // Add central explosion
+        const centralExplosion = document.createElement('div');
+        centralExplosion.className = 'explosion';
+        centralExplosion.textContent = '💥';
+        centralExplosion.style.left = '50%';
+        centralExplosion.style.top = '50%';
+        centralExplosion.style.fontSize = isMobile ? '4rem' : '6rem';
+        container.appendChild(centralExplosion);
+      }
+
+      // Remove effect after animation
+      setTimeout(() => {
+        container.classList.remove('active');
+        container.innerHTML = '';
+      }, 3000);
+    }
+
+    // Function to handle game end
+    function handleGameEnd(isWin) {
+      if (isWin) {
+        const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
+        statusText.textContent = `${winner} Win!`;
+        
+        // Update scores
+        if (currentPlayer === 'X') {
+          scores.plants++;
+          plantScore.textContent = scores.plants;
+        } else {
+          scores.bombs++;
+          bombScore.textContent = scores.bombs;
+        }
+
+        // Create victory effect
+        createVictoryEffect(currentPlayer === 'X' ? 'flower' : 'bomb');
+        
+        // Highlight winning cells
+        highlightWinningCells();
+        
+        // Update single player stats
+        if (isSinglePlayerMode && currentPlayer === 'X') {
+          updatePlayerStats(true);
+        }
+      } else {
+        statusText.textContent = "It's a Draw!";
+        scores.draws++;
+        drawScore.textContent = scores.draws;
+        if (isSinglePlayerMode) {
+          updatePlayerStats(false);
+        }
+      }
+      
+      isGameActive = false;
+    }
+
     function makeComputerMove() {
       if (!isGameActive) return;
       
@@ -1409,7 +1524,22 @@
         // Only proceed if a valid move is found
         if (move !== -1) {
           const cell = cells[move];
-          handleCellClick({ target: cell });
+          handleCellPlayed(cell, move);
+          
+          // Check for win or draw after computer's move
+          if (checkWin()) {
+            handleGameEnd(true);
+            return;
+          }
+
+          if (checkDraw()) {
+            handleGameEnd(false);
+            return;
+          }
+
+          // Switch player
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          statusText.textContent = `${currentPlayer === 'X' ? 'Plants' : 'Bombs'}'s Turn`;
         }
       }, 500);
     }
@@ -1421,40 +1551,17 @@
 
       if (board[index] !== '' || !isGameActive) return;
 
-      // Update board
-      board[index] = currentPlayer;
-      cell.textContent = SYMBOLS[currentPlayer];
-      
-      // Record move
-      moves.push({ player: currentPlayer, position: index });
-      addMoveToTable(currentPlayer, index, moves.length);
+      handleCellPlayed(cell, index);
 
       // Check for win
       if (checkWin()) {
-        const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
-        statusText.textContent = `${winner} Win!`;
-        isGameActive = false;
-        
-        // Update scores
-        if (currentPlayer === 'X') {
-          scores.plants++;
-          plantScore.textContent = scores.plants;
-        } else {
-          scores.bombs++;
-          bombScore.textContent = scores.bombs;
-        }
-
-        // Highlight winning cells
-        highlightWinningCells();
+        handleGameEnd(true);
         return;
       }
 
       // Check for draw
       if (checkDraw()) {
-        statusText.textContent = "It's a Draw!";
-        isGameActive = false;
-        scores.draws++;
-        drawScore.textContent = scores.draws;
+        handleGameEnd(false);
         return;
       }
 
@@ -1466,6 +1573,17 @@
       if (isSinglePlayerMode && currentPlayer === 'O' && isGameActive) {
         makeComputerMove();
       }
+    }
+
+    // Add helper function for cell played
+    function handleCellPlayed(cell, index) {
+      // Update board
+      board[index] = currentPlayer;
+      cell.textContent = SYMBOLS[currentPlayer];
+      
+      // Record move
+      moves.push({ player: currentPlayer, position: index });
+      addMoveToTable(currentPlayer, index, moves.length);
     }
 
     // Check for win
@@ -1545,89 +1663,6 @@
       avatarToggle.classList.toggle('collapsed');
       avatarSelection.classList.toggle('collapsed');
     });
-
-    // Create victory effects
-    function createVictoryEffect(type) {
-      const symbols = type === 'flower' ? 
-        ['🌸', '🌺', '🌹', '🌻', '🌼', '🌷', '🌱', '🍀'] :
-        ['💣', '🧨', '💥', '🎇', '🎆', '⚡', '🔥', '⭐'];
-      
-      const container = document.getElementById(type === 'flower' ? 'flowerVictory' : 'bombVictory');
-      container.innerHTML = '';
-      container.classList.add('active');
-
-      const isMobile = window.innerWidth <= 480;
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const radius = Math.min(window.innerWidth, window.innerHeight) / (isMobile ? 4 : 3);
-
-      if (type === 'flower') {
-        // Create flower burst
-        const flowerCount = isMobile ? 20 : 30;
-
-        // Create flowers in a circular pattern
-        for (let i = 0; i < flowerCount; i++) {
-          const angle = (i / flowerCount) * Math.PI * 2;
-          const x = centerX + Math.cos(angle) * radius;
-          const y = centerY + Math.sin(angle) * radius;
-          
-          const flower = document.createElement('div');
-          flower.className = 'flower';
-          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          flower.style.left = x + 'px';
-          flower.style.top = y + 'px';
-          flower.style.animationDelay = (i * 0.05) + 's';
-          
-          container.appendChild(flower);
-        }
-
-        // Add central burst of flowers
-        const centerFlowers = isMobile ? 6 : 8;
-        for (let i = 0; i < centerFlowers; i++) {
-          const flower = document.createElement('div');
-          flower.className = 'flower';
-          flower.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          flower.style.left = '50%';
-          flower.style.top = '50%';
-          flower.style.transform = 'translate(-50%, -50%)';
-          flower.style.animationDelay = (i * 0.1) + 's';
-          container.appendChild(flower);
-        }
-      } else {
-        // Bomb animation
-        const count = isMobile ? 10 : 15;
-
-        for (let i = 0; i < count; i++) {
-          const angle = (i / count) * Math.PI * 2;
-          const x = centerX + Math.cos(angle) * (radius / 2);
-          const y = centerY + Math.sin(angle) * (radius / 2);
-          
-          const element = document.createElement('div');
-          element.className = 'explosion';
-          element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          element.style.left = `${(x / window.innerWidth) * 100}%`;
-          element.style.top = `${(y / window.innerHeight) * 100}%`;
-          element.style.animationDelay = `${(i / count) * 0.2}s`;
-          
-          container.appendChild(element);
-        }
-
-        // Add central explosion
-        const centralExplosion = document.createElement('div');
-        centralExplosion.className = 'explosion';
-        centralExplosion.textContent = '💥';
-        centralExplosion.style.left = '50%';
-        centralExplosion.style.top = '50%';
-        centralExplosion.style.transform = 'translate(-50%, -50%)';
-        centralExplosion.style.fontSize = isMobile ? '4rem' : '6rem';
-        container.appendChild(centralExplosion);
-      }
-
-      // Remove effect after animation
-      setTimeout(() => {
-        container.classList.remove('active');
-      }, 3000);
-    }
   </script>
 </body>
 </html> 
