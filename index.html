@@ -26,6 +26,69 @@
       --bomb-dark: #1f2937;
     }
 
+    /* Game Events Scroller */
+    .events-scroller {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 200px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 15px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .events-title {
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .events-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .event-item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      color: white;
+      font-size: 0.9rem;
+      animation: fadeIn 0.3s ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .event-item.flower {
+      border-color: var(--x-color);
+      background: rgba(255, 105, 180, 0.1);
+    }
+
+    .event-item.bomb {
+      border-color: var(--o-color);
+      background: rgba(74, 74, 74, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Update body background */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -45,6 +108,64 @@
       min-height: 100vh;
     }
 
+    /* Add plant and bomb decorative elements */
+    .background-elements {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .plant-element {
+      position: absolute;
+      font-size: 2rem;
+      animation: floatAndSpin 6s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    .bomb-element {
+      position: absolute;
+      font-size: 2rem;
+      animation: floatAndBounce 4s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    /* Plant side elements */
+    .plant-side {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Bomb side elements */
+    .bomb-side {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    @keyframes floatAndSpin {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+
+    @keyframes floatAndBounce {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.1); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* Game container styles */
     .game-container {
       background: rgba(255, 255, 255, 0.15);
       padding: 2rem;
@@ -59,16 +180,115 @@
       text-align: center;
       color: white;
       font-size: 2rem;
-      margin-bottom: 2rem;
+      margin-bottom: 0.5rem;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
+    .game-subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin: 1rem 0 2rem;
+      font-style: italic;
+    }
+
+    /* Avatar selection styles */
+    .avatar-selection {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .avatar-side {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      width: 45%;
+    }
+
+    .avatar-side.plants {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+
+    .avatar-side.bombs {
+      background: rgba(74, 74, 74, 0.1);
+      border: 1px solid rgba(74, 74, 74, 0.2);
+    }
+
+    .avatar-title {
+      color: white;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .avatar-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .avatar-option {
+      cursor: pointer;
+      font-size: 2rem;
+      padding: 0.8rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid transparent;
+    }
+
+    .avatar-option:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .avatar-option.selected {
+      border-color: white;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Scoreboard styles */
+    #scoreboard {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-value {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    /* Board styles */
     #board {
       display: grid;
       grid-template-columns: repeat(3, var(--cell-size));
       grid-template-rows: repeat(3, var(--cell-size));
       gap: 5px;
-      margin-bottom: 2rem;
+      margin: 2rem 0;
       background: rgba(255, 255, 255, 0.1);
       padding: 10px;
       border-radius: 10px;
@@ -87,34 +307,24 @@
     }
 
     .cell:hover {
-      background: rgba(255, 255, 255, 1);
       transform: scale(1.05);
-    }
-
-    .cell.x {
-      color: var(--x-color);
-    }
-
-    .cell.o {
-      color: var(--o-color);
+      background: white;
     }
 
     .cell.winner {
-      background: var(--winning-color);
-      color: white;
+      animation: winPulse 1s infinite;
     }
 
-    #status {
-      text-align: center;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: white;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    @keyframes winPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
+    /* Button styles */
     #restart {
       display: block;
-      margin: 0 auto;
+      margin: 1rem auto;
       padding: 0.75rem 1.5rem;
       font-size: 1rem;
       background: var(--primary-color);
@@ -126,27 +336,121 @@
     }
 
     #restart:hover {
-      background: #2563eb;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
     }
 
-    .game-subtitle {
+    /* Status text */
+    #status {
       text-align: center;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.1rem;
-      margin: 1rem 0 2rem;
-      font-style: italic;
+      color: white;
+      font-size: 1.2rem;
+      margin: 1rem 0;
+      min-height: 1.5rem;
     }
 
-    /* Add your existing animations and other styles here */
+    /* Responsive design */
+    @media (max-width: 768px) {
+      :root {
+        --cell-size: 80px;
+        --mark-size: 2rem;
+      }
+
+      .game-container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      .events-scroller {
+        position: static;
+        width: 90%;
+        margin: 1rem auto;
+        transform: none;
+      }
+
+      .avatar-selection {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .avatar-side {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Background elements -->
+  <div class="background-elements">
+    <div class="plant-side">
+      <div class="plant-element" style="left: 10%; top: 20%;">🌸</div>
+      <div class="plant-element" style="left: 30%; top: 40%;">🌺</div>
+      <div class="plant-element" style="left: 20%; top: 60%;">🌹</div>
+      <div class="plant-element" style="left: 40%; top: 80%;">🌻</div>
+    </div>
+    <div class="bomb-side">
+      <div class="bomb-element" style="right: 10%; top: 20%;">💣</div>
+      <div class="bomb-element" style="right: 30%; top: 40%;">💥</div>
+      <div class="bomb-element" style="right: 20%; top: 60%;">🧨</div>
+      <div class="bomb-element" style="right: 40%; top: 80%;">⚡</div>
+    </div>
+  </div>
+
+  <!-- Game container -->
   <div class="game-container">
     <h1>Plants vs Bombs</h1>
     <p class="game-subtitle">Some people want to destroy plants, some people want to keep them. Both sides fight, see who wins with a game of tic-tac-toe</p>
-    
+
+    <!-- Avatar selection -->
+    <div class="avatar-selection">
+      <div class="avatar-side plants">
+        <div class="avatar-title">Choose Your Plant</div>
+        <div class="avatar-options" id="plantAvatars">
+          <div class="avatar-option selected" data-symbol="🌸">🌸</div>
+          <div class="avatar-option" data-symbol="🌺">🌺</div>
+          <div class="avatar-option" data-symbol="🌹">🌹</div>
+          <div class="avatar-option" data-symbol="🌻">🌻</div>
+          <div class="avatar-option" data-symbol="🌼">🌼</div>
+          <div class="avatar-option" data-symbol="🌷">🌷</div>
+          <div class="avatar-option" data-symbol="🌱">🌱</div>
+          <div class="avatar-option" data-symbol="🍀">🍀</div>
+        </div>
+      </div>
+      <div class="avatar-side bombs">
+        <div class="avatar-title">Choose Your Bomb</div>
+        <div class="avatar-options" id="bombAvatars">
+          <div class="avatar-option selected" data-symbol="💣">💣</div>
+          <div class="avatar-option" data-symbol="🧨">🧨</div>
+          <div class="avatar-option" data-symbol="💥">💥</div>
+          <div class="avatar-option" data-symbol="🎇">🎇</div>
+          <div class="avatar-option" data-symbol="🎆">🎆</div>
+          <div class="avatar-option" data-symbol="⚡">⚡</div>
+          <div class="avatar-option" data-symbol="🔥">🔥</div>
+          <div class="avatar-option" data-symbol="⭐">⭐</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scoreboard -->
+    <div id="scoreboard">
+      <div class="score-item">
+        <div class="score-label">Plants</div>
+        <div class="score-value" id="plantScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Draws</div>
+        <div class="score-value" id="drawScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Bombs</div>
+        <div class="score-value" id="bombScore">0</div>
+      </div>
+    </div>
+
+    <!-- Game status -->
     <div id="status"></div>
+
+    <!-- Game board -->
     <div id="board">
       <div class="cell" data-index="0"></div>
       <div class="cell" data-index="1"></div>
@@ -158,59 +462,122 @@
       <div class="cell" data-index="7"></div>
       <div class="cell" data-index="8"></div>
     </div>
+
+    <!-- Restart button -->
     <button id="restart">Restart Game</button>
   </div>
 
+  <!-- Game events log -->
+  <div class="events-scroller">
+    <div class="events-title">🎮 Game Events</div>
+    <div class="events-container" id="eventsContainer"></div>
+  </div>
+
   <script>
-    const cells = document.querySelectorAll('.cell');
-    const statusText = document.getElementById('status');
-    const restartBtn = document.getElementById('restart');
+    // Game state
     let currentPlayer = 'X';
     let board = ['', '', '', '', '', '', '', '', ''];
     let isGameActive = true;
+    let scores = {
+      plants: 0,
+      bombs: 0,
+      draws: 0
+    };
 
-    const SYMBOLS = {
+    // Symbols for players
+    let SYMBOLS = {
       'X': '🌸',
       'O': '💣'
     };
 
+    // DOM elements
+    const cells = document.querySelectorAll('.cell');
+    const statusText = document.getElementById('status');
+    const restartBtn = document.getElementById('restart');
+    const plantScore = document.getElementById('plantScore');
+    const bombScore = document.getElementById('bombScore');
+    const drawScore = document.getElementById('drawScore');
+    const eventsContainer = document.getElementById('eventsContainer');
+
+    // Winning combinations
     const winningCombinations = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6] // Diagonals
     ];
 
+    // Add event to game log
+    function addEvent(message, type = '') {
+      const event = document.createElement('div');
+      event.className = `event-item ${type}`;
+      event.textContent = message;
+      eventsContainer.insertBefore(event, eventsContainer.firstChild);
+
+      // Keep only last 10 events
+      while (eventsContainer.children.length > 10) {
+        eventsContainer.removeChild(eventsContainer.lastChild);
+      }
+    }
+
+    // Handle cell click
     function handleCellClick(e) {
       const cell = e.target;
       const index = parseInt(cell.dataset.index);
 
       if (board[index] !== '' || !isGameActive) return;
 
+      // Update board
       board[index] = currentPlayer;
       cell.textContent = SYMBOLS[currentPlayer];
-      cell.classList.add(currentPlayer.toLowerCase());
+      
+      // Add move event
+      addEvent(
+        `${SYMBOLS[currentPlayer]} placed at position ${index + 1}`,
+        currentPlayer === 'X' ? 'flower' : 'bomb'
+      );
 
+      // Check for win
       if (checkWin()) {
-        statusText.textContent = `${currentPlayer === 'X' ? 'Plants' : 'Bombs'} Win!`;
+        const winner = currentPlayer === 'X' ? 'Plants' : 'Bombs';
+        statusText.textContent = `${winner} Win!`;
         isGameActive = false;
+        
+        // Update scores
+        if (currentPlayer === 'X') {
+          scores.plants++;
+          plantScore.textContent = scores.plants;
+        } else {
+          scores.bombs++;
+          bombScore.textContent = scores.bombs;
+        }
+
+        // Add win event
+        addEvent(
+          `${winner} won the game!`,
+          currentPlayer === 'X' ? 'flower' : 'bomb'
+        );
+
+        // Highlight winning cells
+        highlightWinningCells();
         return;
       }
 
+      // Check for draw
       if (checkDraw()) {
         statusText.textContent = "It's a Draw!";
         isGameActive = false;
+        scores.draws++;
+        drawScore.textContent = scores.draws;
+        addEvent('Game ended in a draw!');
         return;
       }
 
+      // Switch player
       currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
       statusText.textContent = `${currentPlayer === 'X' ? 'Plants' : 'Bombs'}'s Turn`;
     }
 
+    // Check for win
     function checkWin() {
       return winningCombinations.some(combination => {
         return combination.every(index => {
@@ -219,25 +586,68 @@
       });
     }
 
+    // Check for draw
     function checkDraw() {
       return board.every(cell => cell !== '');
     }
 
+    // Highlight winning cells
+    function highlightWinningCells() {
+      winningCombinations.forEach(combination => {
+        if (combination.every(index => board[index] === currentPlayer)) {
+          combination.forEach(index => {
+            cells[index].classList.add('winner');
+          });
+        }
+      });
+    }
+
+    // Restart game
     function restartGame() {
       currentPlayer = 'X';
       board = ['', '', '', '', '', '', '', '', ''];
       isGameActive = true;
       statusText.textContent = "Plants's Turn";
+      
       cells.forEach(cell => {
         cell.textContent = '';
-        cell.classList.remove('x', 'o');
+        cell.classList.remove('winner');
+      });
+
+      addEvent('🔄 Game restarted!');
+    }
+
+    // Avatar selection
+    function handleAvatarSelection(container, playerSymbol) {
+      const options = container.querySelectorAll('.avatar-option');
+      
+      options.forEach(option => {
+        option.addEventListener('click', () => {
+          options.forEach(opt => opt.classList.remove('selected'));
+          option.classList.add('selected');
+          
+          SYMBOLS[playerSymbol] = option.dataset.symbol;
+          
+          // Update board with new symbol
+          cells.forEach((cell, index) => {
+            if (board[index] === playerSymbol) {
+              cell.textContent = SYMBOLS[playerSymbol];
+            }
+          });
+        });
       });
     }
 
+    // Initialize avatar selection
+    handleAvatarSelection(document.getElementById('plantAvatars'), 'X');
+    handleAvatarSelection(document.getElementById('bombAvatars'), 'O');
+
+    // Add event listeners
     cells.forEach(cell => cell.addEventListener('click', handleCellClick));
     restartBtn.addEventListener('click', restartGame);
 
     // Initialize game
+    addEvent('🎮 Game started! Good luck!');
     statusText.textContent = "Plants's Turn";
   </script>
 </body>
