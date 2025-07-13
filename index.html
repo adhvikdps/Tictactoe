@@ -1094,8 +1094,8 @@
     <!-- Game mode selection -->
     <div class="game-mode-selection">
       <div class="mode-controls">
-        <button class="mode-button active" data-mode="two-player">Two Players</button>
-        <button class="mode-button" data-mode="single-player">vs Computer</button>
+        <button class="mode-button" data-mode="two-player">Two Players</button>
+        <button class="mode-button active" data-mode="single-player">vs Computer</button>
       </div>
       <div class="mode-divider"></div>
       <button class="mode-button collapsed" id="avatarToggle">
@@ -1186,7 +1186,7 @@
     <div id="status"></div>
 
     <!-- Leaderboard -->
-    <div class="leaderboard-container" id="leaderboard">
+    <div class="leaderboard-container active" id="leaderboard">
       <div class="leaderboard-title">Single Player Leaderboard</div>
       <table class="leaderboard-table">
         <thead>
@@ -1219,7 +1219,7 @@
       bombs: 0,
       draws: 0
     };
-    let isSinglePlayerMode = false;
+    let isSinglePlayerMode = true;
     let currentPlayerName = '';
     let gameStats = {
       wins: 0,
@@ -1790,6 +1790,9 @@
 
     // Initialize game
     statusText.textContent = "Plants's Turn";
+    
+    // Initialize leaderboard for single player mode
+    updateLeaderboardDisplay();
 
     // Avatar section toggle
     const avatarToggle = document.getElementById('avatarToggle');
